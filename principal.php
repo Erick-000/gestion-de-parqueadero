@@ -141,7 +141,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             $anio = date('Y');
                                                                             ?>
 
-                                                                            <input type="date" class="form-control" value="<?php echo $anio . "-" . $mes . "-" . $dia; ?>">
+                                                                            <input type="date" class="form-control" value="<?php echo $anio . "-" . $mes . "-" . $dia; ?>" id="fecha_ingreso<?php echo $id_map; ?>" >
                                                                         </div>
                                                                     </div>
 
@@ -157,13 +157,33 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             $minutos = date('i');
                                                                             ?>
 
-                                                                            <input type="time" class="form-control" value="<?php echo $hora24 . ':' . $minutos; ?>">
+                                                                            <input type="time" class="form-control" value="<?php echo $hora24 . ':' . $minutos; ?>" id="hora_ingreso<?php echo $id_map; ?>" >
                                                                         </div>
                                                                     </div>
+
+                                                                    <div class="form-group row">
+                                                                        <label for="staticEmail" class="col-sm-4 col-form-label">Cuviculo:</label>
+                                                                        <div class="col-sm-8">
+                                                                            
+                                                                            <input type="text" class="form-control" value="<?php echo $nro_espacio; ?>" id="cuviculo<?php echo $id_map; ?>" >
+                                                                        </div>
+                                                                    </div>
+
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                                                    <button type="button" class="btn btn-primary">Imprimir ticket</button>
+                                                                    <button type="button" class="btn btn-primary" id="btn_registrar_ticket<?php echo $id_map; ?>">Imprimir ticket</button>
+                                                                    <script>
+                                                                        $('#btn_registrar_ticket<?php echo $id_map;?>').click(function (){
+                                                                            var placa = $('#placa_buscar<?php echo $id_map;?>').val();
+                                                                            var cliente = $('#nombre_cliente<?php echo $id_map;?>').val();
+                                                                            var cedula = $('#cedula_cliente<?php echo $id_map;?>').val();
+                                                                            var fecha_ingreso = $('#fecha_ingreso<?php echo $id_map;?>').val();
+                                                                            var hora_ingreso = $('#hora_ingreso<?php echo $id_map;?>').val();
+                                                                            var cuviculo = $('#cuviculo<?php echo $id_map;?>').val();
+                                                                        
+                                                                        });
+                                                                    </script>
                                                                 </div>
                                                             </div>
                                                         </div>

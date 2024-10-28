@@ -32,14 +32,14 @@ if ($nombre_cliente == "") {
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-2 col-form-label">Cliente:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" id="nombre_cliente<?php echo $id_map;?>" >
         </div>
     </div>
 
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-2 col-form-label">Cedula:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control">
+            <input type="text" class="form-control" id="cedula_cliente<?php echo $id_map;?>" >
         </div>
     </div>
 <?php
@@ -50,14 +50,14 @@ if ($nombre_cliente == "") {
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-2 col-form-label">Cliente:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" value="<?php echo $nombre_cliente; ?>" >
+            <input type="text" class="form-control" value="<?php echo $nombre_cliente; ?>" id="nombre_cliente<?php echo $id_map; ?>" >
         </div>
     </div>
 
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-2 col-form-label">Cedula:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" value="<?php echo $cc_cliente; ?>">
+            <input type="text" class="form-control" value="<?php echo $cc_cliente; ?>"  id="cedula_cliente<?php echo $id_map;?>" >
         </div>
     </div>
 <?php
