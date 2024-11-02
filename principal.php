@@ -88,8 +88,8 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <div class="form-group row">
-                                                                        <label for="staticEmail" class="col-sm-2 col-form-label">Placa:</label>
-                                                                        <div class="col-sm-7">
+                                                                        <label for="staticEmail" class="col-sm-3 col-form-label">Placa: <span><b style="color: red">*</b></span> </label>
+                                                                        <div class="col-sm-6">
                                                                             <input type="text" style="text-transform: uppercase;" class="form-control" id="placa_buscar<?php echo $id_map; ?>">
                                                                         </div>
                                                                         <div class="col-sm-3">
@@ -102,6 +102,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             <script>
                                                                                 $('#btn_buscar_cliente<?php echo $id_map; ?>').click(function() {
                                                                                     var placa = $('#placa_buscar<?php echo $id_map; ?>').val();
+                                                                                    var id_map = <?php echo $id_map ?>
                                                                                     // Validaciones para asegurar que los campos no estén vacíos antes de enviar los datos.
                                                                                     if (placa == "") {
                                                                                         alert('Debe llenar el campo placa');
@@ -110,7 +111,8 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                                         // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
                                                                                         var url = 'clientes/controller_buscar_cliente.php';
                                                                                         $.get(url, {
-                                                                                            placa: placa
+                                                                                            placa: placa,
+                                                                                            id_map: id_map
                                                                                         }, function(datos) {
                                                                                             // Muestra la respuesta de la operación en el div con id 'respuesta'.
                                                                                             $('#respuesta_buscar_cliente<?php echo $id_map; ?>').html(datos);
@@ -141,7 +143,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             $anio = date('Y');
                                                                             ?>
 
-                                                                            <input type="date" class="form-control" value="<?php echo $anio . "-" . $mes . "-" . $dia; ?>" id="fecha_ingreso<?php echo $id_map; ?>" >
+                                                                            <input type="date" class="form-control" value="<?php echo $anio . "-" . $mes . "-" . $dia; ?>" id="fecha_ingreso<?php echo $id_map; ?>">
                                                                         </div>
                                                                     </div>
 
@@ -157,15 +159,15 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             $minutos = date('i');
                                                                             ?>
 
-                                                                            <input type="time" class="form-control" value="<?php echo $hora24 . ':' . $minutos; ?>" id="hora_ingreso<?php echo $id_map; ?>" >
+                                                                            <input type="time" class="form-control" value="<?php echo $hora24 . ':' . $minutos; ?>" id="hora_ingreso<?php echo $id_map; ?>">
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="form-group row">
-                                                                        <label for="staticEmail" class="col-sm-4 col-form-label">Cuviculo:</label>
+                                                                        <label for="staticEmail" class="col-sm-4 col-form-label">Cuviculo:</label> 
                                                                         <div class="col-sm-8">
-                                                                            
-                                                                            <input type="text" class="form-control" value="<?php echo $nro_espacio; ?>" id="cuviculo<?php echo $id_map; ?>" >
+
+                                                                            <input type="text" class="form-control" value="<?php echo $nro_espacio; ?>" id="cuviculo<?php echo $id_map; ?>" disabled >
                                                                         </div>
                                                                     </div>
 
@@ -174,16 +176,46 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                                                     <button type="button" class="btn btn-primary" id="btn_registrar_ticket<?php echo $id_map; ?>">Imprimir ticket</button>
                                                                     <script>
-                                                                        $('#btn_registrar_ticket<?php echo $id_map;?>').click(function (){
-                                                                            var placa = $('#placa_buscar<?php echo $id_map;?>').val();
-                                                                            var cliente = $('#nombre_cliente<?php echo $id_map;?>').val();
-                                                                            var cedula = $('#cedula_cliente<?php echo $id_map;?>').val();
-                                                                            var fecha_ingreso = $('#fecha_ingreso<?php echo $id_map;?>').val();
-                                                                            var hora_ingreso = $('#hora_ingreso<?php echo $id_map;?>').val();
-                                                                            var cuviculo = $('#cuviculo<?php echo $id_map;?>').val();
-                                                                        
+                                                                        $('#btn_registrar_ticket<?php echo $id_map; ?>').click(function() {
+                                                                            var placa = $('#placa_buscar<?php echo $id_map; ?>').val();
+                                                                            var nombre_cliente = $('#nombre_cliente<?php echo $id_map; ?>').val();
+                                                                            var cc_cliente = $('#cedula_cliente<?php echo $id_map; ?>').val();
+                                                                            var fecha_ingreso = $('#fecha_ingreso<?php echo $id_map; ?>').val();
+                                                                            var hora_ingreso = $('#hora_ingreso<?php echo $id_map; ?>').val();
+                                                                            var cuviculo = $('#cuviculo<?php echo $id_map; ?>').val();
+                                                                            var user_sesion = "<?php echo $usuario_sesion ?>";
+
+                                                                            if (placa == "") {
+                                                                                alert("Debe llenar el campo Placa...");
+                                                                                $('#placa_buscar<?php echo $id_map; ?>').focus();
+                                                                            } else if (nombre_cliente == "") {
+                                                                                alert("Debe llenar el campo Nombre del cliente...");
+                                                                                $('#nombre_cliente<?php echo $id_map; ?>').focus();
+                                                                            } else if (cc_cliente == "") {
+                                                                                alert("Debe llenar el campo Cedula...")
+                                                                                $('#cedula_cliente<?php echo $id_map; ?>').focus();
+                                                                            } else {
+                                                                                // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
+                                                                                var url = 'tickets/controller_registrar_tickets.php';
+                                                                                $.get(url, {
+                                                                                    placa: placa,
+                                                                                    nombre_cliente: nombre_cliente,
+                                                                                    cc_cliente: cc_cliente,
+                                                                                    fecha_ingreso: fecha_ingreso,
+                                                                                    hora_ingreso: hora_ingreso,
+                                                                                    cuviculo: cuviculo,
+                                                                                    user_sesion:user_sesion
+                                                                                }, function(datos) {
+                                                                                    // Muestra la respuesta de la operación en el div con id 'respuesta'.
+                                                                                    $('#respuesta_ticket').html(datos);
+                                                                                });
+                                                                            }
+
                                                                         });
                                                                     </script>
+                                                                </div>
+                                                                <div id="respuesta_ticket">
+
                                                                 </div>
                                                             </div>
                                                         </div>

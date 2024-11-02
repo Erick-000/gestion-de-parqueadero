@@ -3,6 +3,7 @@
 include('../app/config.php');
 
 $placa = $_GET['placa'];
+$id_map = $_GET['id_map'];
 
 $placa = strtoupper($placa); //Convertir todo a mayusculas
 
@@ -30,15 +31,15 @@ foreach ($buscar as $busca) {
 if ($nombre_cliente == "") {
 ?>
     <div class="form-group row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Cliente:</label>
-        <div class="col-sm-10">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Cliente: <span><b style="color: red" >*</b></span> </label>
+        <div class="col-sm-9">
             <input type="text" class="form-control" id="nombre_cliente<?php echo $id_map;?>" >
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Cedula:</label>
-        <div class="col-sm-10">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Cedula: <span><b style="color: red" >*</b></span> </label>
+        <div class="col-sm-9">
             <input type="text" class="form-control" id="cedula_cliente<?php echo $id_map;?>" >
         </div>
     </div>
@@ -48,15 +49,15 @@ if ($nombre_cliente == "") {
     //echo $nombre_cliente . " - " . $cc_cliente;
 ?>
     <div class="form-group row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Cliente:</label>
-        <div class="col-sm-10">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Cliente: <span><b style="color: red" >*</b></span> </label>
+        <div class="col-sm-9">
             <input type="text" class="form-control" value="<?php echo $nombre_cliente; ?>" id="nombre_cliente<?php echo $id_map; ?>" >
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Cedula:</label>
-        <div class="col-sm-10">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Cedula: <span><b style="color: red" >*</b></span> </label>
+        <div class="col-sm-9">
             <input type="text" class="form-control" value="<?php echo $cc_cliente; ?>"  id="cedula_cliente<?php echo $id_map;?>" >
         </div>
     </div>
