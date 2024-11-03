@@ -206,9 +206,20 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                                     $('#respuesta_ticket').html(datos);
                                                                                 });
 
-                                                                                // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
-                                                                                var url_2 = 'tickets/controller_registrar_tickets.php';
+                                                                                 // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
+                                                                                 var url_2 = 'clientes/controller_registrar_clientes.php';
                                                                                 $.get(url_2, {
+                                                                                    nombre_cliente: nombre_cliente,
+                                                                                    cc_cliente: cc_cliente,
+                                                                                    placa: placa
+                                                                                }, function(datos) {
+                                                                                    // Muestra la respuesta de la operación en el div con id 'respuesta'.
+                                                                                    $('#respuesta_ticket').html(datos);
+                                                                                });
+
+                                                                                // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
+                                                                                var url_3 = 'tickets/controller_registrar_tickets.php';
+                                                                                $.get(url_3, {
                                                                                     placa: placa,
                                                                                     nombre_cliente: nombre_cliente,
                                                                                     cc_cliente: cc_cliente,
