@@ -87,7 +87,7 @@ include('app/config.php'); ?>
                     $nro_espacio = $mapeo['nro_espacio'];
                     $estado_espacio = $mapeo['estado_espacio'];
 
-                    if ($estado_espacio == "Libre") { ?>
+                    if ($estado_espacio == "LIBRE") { ?>
                         <div class="col">
                             <center>
                                 <h2><?php echo $nro_espacio; ?></h2>
@@ -99,7 +99,7 @@ include('app/config.php'); ?>
                     <?php
                     }
 
-                    if ($estado_espacio == "Ocupado") { ?>
+                    if ($estado_espacio == "OCUPADO") { ?>
                         <div class="col">
                             <center>
                                 <h2><?php echo $nro_espacio; ?></h2>

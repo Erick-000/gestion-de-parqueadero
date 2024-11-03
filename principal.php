@@ -65,7 +65,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                         $nro_espacio = $mapeo['nro_espacio'];
                                         $estado_espacio = $mapeo['estado_espacio'];
 
-                                        if ($estado_espacio == "Libre") { ?>
+                                        if ($estado_espacio == "LIBRE") { ?>
                                             <div class="col">
                                                 <center>
                                                     <h2><?php echo $nro_espacio; ?></h2>
@@ -194,10 +194,21 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                             } else if (cc_cliente == "") {
                                                                                 alert("Debe llenar el campo Cedula...")
                                                                                 $('#cedula_cliente<?php echo $id_map; ?>').focus();
-                                                                            } else {
+                                                                            } 
+                                                                            else {
+
                                                                                 // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
-                                                                                var url = 'tickets/controller_registrar_tickets.php';
-                                                                                $.get(url, {
+                                                                                var url_1 = 'parqueo/controller_cambiar_estado_ocupado.php';
+                                                                                $.get(url_1, {
+                                                                                    cuviculo: cuviculo
+                                                                                }, function(datos) {
+                                                                                    // Muestra la respuesta de la operación en el div con id 'respuesta'.
+                                                                                    $('#respuesta_ticket').html(datos);
+                                                                                });
+
+                                                                                // Si todos los campos están completos, se envía una petición GET a 'controller_create.php' para guardar los datos.
+                                                                                var url_2 = 'tickets/controller_registrar_tickets.php';
+                                                                                $.get(url_2, {
                                                                                     placa: placa,
                                                                                     nombre_cliente: nombre_cliente,
                                                                                     cc_cliente: cc_cliente,
@@ -225,7 +236,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                         <?php
                                         }
 
-                                        if ($estado_espacio == "Ocupado") { ?>
+                                        if ($estado_espacio == "OCUPADO") { ?>
                                             <div class="col">
                                                 <center>
                                                     <h2><?php echo $nro_espacio; ?></h2>

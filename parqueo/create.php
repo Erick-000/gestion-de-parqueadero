@@ -43,7 +43,7 @@ include('../layout/admin/datos_usuario_sesion.php');
                                         <div class="form group">
                                             <label for="">Estado del espacio</label>
                                             <select name="" id="estado_espacio" class="form-control">
-                                                <option value="Libre">Libre</option>
+                                                <option value="LIBRE">LIBRE</option>
                                             </select>
                                         </div>
                                     </div>
