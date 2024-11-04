@@ -50,22 +50,22 @@ include('../layout/admin/datos_usuario_sesion.php');
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for=""> Nombre del cliente </label>
-                                            <input type="text" class="form-control" value="<?php echo $nombre_cliente; ?>">
+                                            <label for=""> Nombre del cliente <span style="color: red;"><b>*</b></span> </label>
+                                            <input type="text" id="nombre_cliente" class="form-control" value="<?php echo $nombre_cliente; ?>">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for=""> Cedula del cliente </label>
-                                            <input type="text" class="form-control" value="<?php echo $cc_cliente; ?>">
+                                            <label for=""> Cedula del cliente <span style="color: red;"><b>*</b></span> </label>
+                                            <input type="text" id="cc_cliente" class="form-control" value="<?php echo $cc_cliente; ?>">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for=""> Placa </label>
-                                            <input type="text" class="form-control" value="<?php echo $placa_auto; ?>">
+                                            <label for=""> Placa <span style="color: red;"><b>*</b></span> </label>
+                                            <input type="text" id="placa_auto" class="form-control" value="<?php echo $placa_auto; ?>">
                                         </div>
                                     </div>
 
@@ -75,15 +75,17 @@ include('../layout/admin/datos_usuario_sesion.php');
                                         <div class="col-md 12">
                                             <div class="form-group">
                                                 <a href="index.php" class="btn btn-default">Cancelar</a>
-                                                <button class="btn btn-success" >
+                                                <button class="btn btn-success" id="btn_actualizar_cliente" >
                                                     Actualizar
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
 
-                                </div>
+                                    <div id="respuesta">
 
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -97,3 +99,41 @@ include('../layout/admin/datos_usuario_sesion.php');
 </body>
 
 </html>
+
+<script>
+    // Evento que se activa cuando se hace clic en el botón de registrar.
+    $('#btn_actualizar_cliente').click(function () {
+        
+        var nombre_cliente = $('#nombre_cliente').val();
+        var cc_cliente = $('#cc_cliente').val();
+        var placa_auto = $('#placa_auto').val();
+        var id_cliente = "<?php echo $id_cliente_get; ?>";
+
+        // Validaciones para asegurar que los campos no estén vacíos antes de enviar los datos.
+        if(nombre_cliente == ""){
+            alert('Debe de llenar el campo nombre del cliente');
+            $('#nombre_cliente').focus();
+        }
+        else if(cc_cliente == ""){
+            alert('Debe llenar el campo cedula del cliente')
+            $('#cc_cliente').focus();
+        }
+        else if(placa_auto == ""){
+            alert('Debe llenar el campo placa del vehículo')
+            $('#placa_auto').focus();
+        }
+        else {
+            // Si todos los campos están completos, envía una solicitud GET a 'controller_update.php' con los datos.
+            var url = 'controller_update.php';
+            $.get(url, {
+                nombre_cliente: nombre_cliente,
+                cc_cliente: cc_cliente,
+                placa_auto: placa_auto,
+                id_cliente: id_cliente
+            }, function (datos) {
+                // Muestra la respuesta del servidor en el elemento con id 'respuesta'.
+                $('#respuesta').html(datos);
+            });
+        }
+    });
+</script>
