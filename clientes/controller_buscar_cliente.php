@@ -64,4 +64,38 @@ if ($nombre_cliente == "") {
 <?php
 }
 
+
+//Busca la placa en la tabla tickets
+$contador_ticket = 0;
+
+$query_tickets = $pdo->prepare("SELECT * FROM tb_tickets WHERE placa_auto = '$placa' AND estado_ticket = 'OCUPADO' AND estado = '1' ");
+
+// Ejecuta la consulta.
+$query_tickets->execute();
+
+// Obtiene todos los resultados de la consulta y los almacena en un array.
+$datos_tickets = $query_tickets->fetchAll(PDO::FETCH_ASSOC);
+
+// Itera sobre cada usuario obtenido de la base de datos.
+foreach ($datos_tickets as $datos_ticket) {
+    $contador_ticket = $contador_ticket + 1;
+}
+if($contador_ticket == "1"){
+    ?>
+    <div class="alert alert-danger">
+    Este vehículo ya está parqueado
+    </div>
+    <script>
+        $('#btn_registrar_ticket<?php echo $id_map; ?>').attr('disabled','disabled');
+    </script>
+    <?php
+}else{
+    ?>
+    <script>
+    $('#btn_registrar_ticket<?php echo $id_map; ?>').removeAttr('disabled');
+    </script>
+    <?php
+    
+}
+
 ?>
