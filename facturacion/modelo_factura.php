@@ -56,38 +56,14 @@ foreach ($informaciones as $informacion) {
     $pais = $informacion['pais'];
 }
 
-//Cargar la información del ticket desde el id
-$id_ticket_get = $_GET['id'];
-// Prepara una consulta para obtener todos los usuarios que estén activos (estado = '1').
-$query_tickets = $pdo->prepare("SELECT * FROM tb_tickets WHERE id_ticket = '$id_ticket_get' AND estado = '1'");
-
-// Ejecuta la consulta.
-$query_tickets->execute();
-
-// Obtiene todos los resultados de la consulta y los almacena en un array.
-$tickets = $query_tickets->fetchAll(PDO::FETCH_ASSOC);
-
-// Itera sobre cada usuario obtenido de la base de datos.
-foreach ($tickets as $ticket) {
-    // Extrae los datos de cada usuario.
-    $id_ticket = $ticket['id_ticket'];
-    $nombre_cliente = $ticket['nombre_cliente'];
-    $cc_cliente = $ticket['cc_cliente'];
-    $cuviculo = $ticket['cuviculo'];
-    $fecha_ingreso = $ticket['fecha_ingreso'];
-    $hora_ingreso = $ticket['hora_ingreso'];
-    $user_sesion = $ticket['user_sesion'];
-}
-
-
 // create new PDF document
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, array(79, 80), true, 'UTF-8', false);
+$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, array(79, 150), true, 'UTF-8', false);
 
 // set document information
 $pdf->setCreator(PDF_CREATOR);
-$pdf->setAuthor('Nicola Asuni');
-$pdf->setTitle('TCPDF Example 002');
-$pdf->setSubject('TCPDF Tutorial');
+$pdf->setAuthor('Sistema de parqueo');
+$pdf->setTitle('Sistema de parqueo');
+$pdf->setSubject('Sistema de parqueo');
 $pdf->setKeywords('TCPDF, PDF, example, test, guide');
 
 // remove default header/footer
@@ -120,37 +96,61 @@ $pdf->setFont('Helvetica', '', 7);
 // add a page
 $pdf->AddPage();
 
-/*
-$id_ticket = $ticket['id_ticket'];
-    $nombre_cliente = $ticket['nombre_cliente'];
-    $cc_cliente = $ticket['cc_cliente'];
-    $cuviculo = $ticket['cuviculo'];
-    $fecha_ingreso = $ticket['fecha_ingreso'];
-    $hora_ingreso = $ticket['hora_ingreso'];
-    $user_sesion = $ticket['user_sesion'];
-*/
 
 // create some HTML content
 $html = '
 <div>
     <p style="text-align: center">
-        <b> ' . $nombre_parqueo . ' </b> <br>
-        ' . $actividad_empresa . ' <br>
-        Sucursal No ' . $sucursal . '<br>
-        DIRECCIÓN: ' . $direccion . ' <br>
-        TELÉFONO: ' . $telefono . ' <br>
-        ' . $departamento_ciudad . '
+        <b> '.$nombre_parqueo.' </b> <br>
+        '.$actividad_empresa.' <br>
+        NIT: 900882406-5 <br>	
+        Sucursal No ' .$sucursal.'<br>
+        DIRECCIÓN: '.$direccion.' <br>
+        TELÉFONO: '.$telefono.' <br>
+        '.$departamento_ciudad.' 
         -----------------------------------------------------------------------------------
-        <div style="text-align:left" > 
+            <b> Facura Nro. </b> 0001
+        -----------------------------------------------------------------------------------
+            <div style="text-align:left">
             <b> DATOS DEL CLIENTE </b> <br>
-            <b> CLIENTE: </b> '. $nombre_cliente .' <br>
-            <b> CC: </b> '. $cc_cliente .'
-            ----------------------------------------------------------------------------------- <br>
-            <b> CUVICULO DE PARQUEO: </b> '. $cuviculo .' <br>
-            <b> FECHA DE INGRESO: </b> '. $fecha_ingreso .' <br>
-            <b> HORA DE INGRESO: </b> '. $hora_ingreso .'
-            ----------------------------------------------------------------------------------- <br>
-            <b> USUARIO:</b> '. $user_sesion .' 
+            <b> CLIENTE: </b> LUIS FELIPE ROBLEDO SANTOS <br>
+            <b> CC: </b> 107729881 <br>
+            <b> Fecha de la factura: </b> Quibdó, 4 de Noviembre del 2024
+            -----------------------------------------------------------------------------------<br>
+            <b> De: </b> 4/11/2024 <b> Hora: </b> 4:00 P.M <br>
+            <b> A: </b> 4/11/2024 <b> Hora: </b> 6:00 P.M <br>
+            <b> Tiempo: </b> 2 horas 
+            -----------------------------------------------------------------------------------<br>
+            <table border="1" cellpadding ="1" >
+            <tr>
+                <td style="text-align:center" width="101px" ><b> Detalle </b></td>
+                <td style="text-align:center" width="45px" ><b> Precio </b></td>
+                <td style="text-align:center" width="45px" ><b> Cantidad </b></td>
+                <td style="text-align:center" width="45px" ><b> Total </b></td>
+            </tr>
+
+            <tr>
+                <td>Servicio de parqueo de 2 horas en el cuviculo 10 </td>
+                <td style="text-align:center"> 8.000 </td>
+                <td style="text-align:center"> 1 </td>
+                <td style="text-align:center"> COL$ 8.000 </td>
+            </tr>
+            </table>
+            <p style="text-align:rigth">
+            <b> Monto Total: </b> COL$ 8.000
+            </p>
+
+            <p>
+             <b> Son: </b> Ocho mil pesos
+            </p>
+             ----------------------------------------------------------------------------------- <br>
+            <b> USUARIO:</b> ERICK MANUEL MORENO PALACIOS 
+            <p style="text-align:center" >
+            <img src="https://cdn.urbantecno.com/rootear/2015/07/qr.jpg" width="100px">
+            </p>
+
+            <p style="text-align:center" ><b> GRACIAS POR SU PREFERENCIA </b></p>
+
         </div>
     </p>
 </div>

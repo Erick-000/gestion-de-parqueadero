@@ -115,7 +115,7 @@ if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 // ---------------------------------------------------------
 
 // set font
-$pdf->setFont('Helvetica', 'BI', 7);
+$pdf->setFont('Helvetica', '', 7);
 
 // add a page
 $pdf->AddPage();
