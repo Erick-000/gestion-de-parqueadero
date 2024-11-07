@@ -4,6 +4,40 @@
 include('app/config.php');
 include('layout/admin/datos_usuario_sesion.php');
 
+//recuperar el id de la información
+// Prepara una consulta para obtener todos los usuarios que estén activos (estado = '1').
+$query_informaciones = $pdo->prepare("SELECT * FROM tb_informaciones WHERE estado = '1'");
+
+// Ejecuta la consulta.
+$query_informaciones->execute();
+
+// Obtiene todos los resultados de la consulta y los almacena en un array.
+$informaciones = $query_informaciones->fetchAll(PDO::FETCH_ASSOC);
+
+// Itera sobre cada usuario obtenido de la base de datos.
+foreach ($informaciones as $informacion) {
+    // Extrae los datos de cada usuario.
+    $id_informacion = $informacion['id_informacion'];
+}
+
+
+//Recuperar el numero de la factura 
+$contador_del_nro_de_factura = 0;
+// Prepara una consulta para obtener todos los usuarios que estén activos (estado = '1').
+$query_facturaciones = $pdo->prepare("SELECT * FROM tb_facturaciones WHERE estado = '1'");
+
+// Ejecuta la consulta.
+$query_facturaciones->execute();
+
+// Obtiene todos los resultados de la consulta y los almacena en un array.
+$facturaciones = $query_facturaciones->fetchAll(PDO::FETCH_ASSOC);
+
+// Itera sobre cada usuario obtenido de la base de datos.
+foreach ($facturaciones as $facturacion) {
+    $contador_del_nro_de_factura = $contador_del_nro_de_factura + 1;
+}
+$contador_del_nro_de_factura = $contador_del_nro_de_factura + 1;
+
 ?>
 <!--Declaramos el tipo de documento HTML y el idioma -->
 <!DOCTYPE html>
@@ -316,7 +350,7 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                     <div class="form-group row">
                                                                         <label for="staticEmail" class="col-sm-4 col-form-label">Fecha de ingreso:</label>
                                                                         <div class="col-sm-8">
-                                                                            <input type="date" class="form-control" value="<?php echo $fecha_ingreso; ?>" id="fecha_ingreso<?php echo $id_map; ?>" disabled >
+                                                                            <input type="date" class="form-control" value="<?php echo $fecha_ingreso; ?>" id="fecha_ingreso<?php echo $id_map; ?>" disabled>
                                                                         </div>
                                                                     </div>
 
@@ -338,10 +372,57 @@ include('layout/admin/datos_usuario_sesion.php');
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-                                                                    <a href="tickets/controller_cancelar_ticket.php?id=<?php echo $id_ticket ?>&&cuviculo=<?php echo $cuviculo;?>" class="btn btn-danger">Cancelar ticket</a>
+                                                                    <a href="tickets/controller_cancelar_ticket.php?id=<?php echo $id_ticket ?>&&cuviculo=<?php echo $cuviculo; ?>" class="btn btn-danger">Cancelar ticket</a>
                                                                     <a href="tickets/reimprimir_ticket.php?id=<?php echo $id_ticket ?>" class="btn btn-primary">Volver a imprimir</a>
-                                                                    <button type="button" class="btn btn-success"> Facturar </button>
+                                                                    <button type="button" class="btn btn-success" id="btn_facturar<?php echo $id_map; ?>"> Facturar </button>
                                                                     
+                                                                    <?php
+                                                                    //Recupera el id del cliente 
+
+                                                                    // Prepara una consulta para obtener todos los usuarios que estén activos (estado = '1').
+                                                                    $query_datos_cliente_factura = $pdo->prepare("SELECT * FROM tb_clientes WHERE placa_auto = '$placa_auto' AND estado = '1' ");
+
+                                                                    // Ejecuta la consulta.
+                                                                    $query_datos_cliente_factura->execute();
+
+                                                                    // Obtiene todos los resultados de la consulta y los almacena en un array.
+                                                                    $datos_clientes_facturas = $query_datos_cliente_factura->fetchAll(PDO::FETCH_ASSOC);
+
+                                                                    // Itera sobre cada usuario obtenido de la base de datos.
+                                                                    foreach ($datos_clientes_facturas as $datos_clientes_factura) {
+                                                                        // Extrae los datos de cada usuario.
+                                                                        $id_cliente_facturacion = $datos_clientes_factura['id_cliente'];
+                                                                    }
+                                                                    ?>
+
+                                                                    <script>
+                                                                        $('#btn_facturar<?php echo $id_map; ?>').click(function() {
+                                                                            var id_informacion = "<?php echo $id_informacion; ?>";
+                                                                            var nro_factura = "<?php echo $contador_del_nro_de_factura; ?>";
+                                                                            var id_cliente = "<?php echo $id_cliente_facturacion; ?>";
+                                                                            var fecha_ingreso = "<?php echo $fecha_ingreso; ?>";
+                                                                            var hora_ingreso = "<?php echo $hora_ingreso; ?>";
+                                                                            var cuviculo = "<?php echo $cuviculo; ?>";
+                                                                            var user_sesion = "<?php echo $user_sesion; ?>";
+                                                                            
+                                                                            var url_4 = 'facturacion/controller_registrar_factura.php';
+                                                                                $.get(url_4, {
+                                                                                    id_informacion: id_informacion,
+                                                                                    nro_factura: nro_factura,
+                                                                                    id_cliente: id_cliente,
+                                                                                    fecha_ingreso: fecha_ingreso,
+                                                                                    hora_ingreso: hora_ingreso,
+                                                                                    cuviculo: cuviculo,
+                                                                                    user_sesion: user_sesion
+                                                                                }, function(datos) {
+                                                                                    // Muestra la respuesta de la operación en el div con id 'respuesta'.
+                                                                                    $('#respuesta_factura<?php echo $id_map; ?>').html(datos);
+                                                                                });
+                                                                        });
+                                                                    </script>
+                                                                </div>
+                                                                <div id="respuesta_factura<?php echo $id_map; ?>">
+
                                                                 </div>
                                                             </div>
                                                         </div>
