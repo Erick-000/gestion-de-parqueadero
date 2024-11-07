@@ -37,9 +37,9 @@ include('../layout/admin/datos_usuario_sesion.php');
                                     <th>
                                         <center>Nro</center>
                                     </th>
-                                    <th>Cantidad</th>
-                                    <th>Detalle</th>
-                                    <th>Precio</th>
+                                    <th><center>Cantidad</center></th>
+                                    <th><center>Detalle</center></th>
+                                    <th><center>Precio</center></th>
                                     <th>
                                         <center>Acción</center>
                                     </th>

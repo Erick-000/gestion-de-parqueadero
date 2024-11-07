@@ -56,6 +56,54 @@ foreach ($informaciones as $informacion) {
     $pais = $informacion['pais'];
 }
 
+
+// Tomar la información de la factura
+
+// Prepara una consulta para obtener todos los usuarios que estén activos (estado = '1').
+$query_facutras = $pdo->prepare("SELECT * FROM tb_facturaciones WHERE estado = '1'");
+
+// Ejecuta la consulta.
+$query_facutras->execute();
+
+// Obtiene todos los resultados de la consulta y los almacena en un array.
+$facturas = $query_facutras->fetchAll(PDO::FETCH_ASSOC);
+
+// Itera sobre cada usuario obtenido de la base de datos.
+foreach ($facturas as $factura) {
+    // Extrae los datos de cada usuario.
+    $id_facturacion = $factura['id_facturacion'];
+    $id_informacion = $factura['id_informacion'];
+    $nro_factura = $factura['nro_factura'];
+    $id_cliente = $factura['id_cliente'];
+    $fecha_factura = $factura['fecha_factura'];
+    $fecha_ingreso = $factura['fecha_ingreso'];
+    $hora_ingreso = $factura['hora_ingreso'];
+    $fecha_salida = $factura['fecha_salida'];
+    $hora_salida = $factura['hora_salida'];
+    $tiempo = $factura['tiempo'];
+    $cuviculo = $factura['cuviculo'];
+    $detalle = $factura['detalle'];
+    $precio = $factura['precio'];
+    $cantidad = $factura['cantidad'];
+    $total = $factura['total'];
+    $monto_total = $factura['monto_total'];
+    $monto_literal = $factura['monto_literal'];
+    $user_sesion = $factura['user_sesion'];
+    $qr = $factura['qr'];
+}
+
+
+// Tomando datos del cliente 
+$query_clientes = $pdo->prepare("SELECT * FROM tb_clientes WHERE id_cliente = '$id_cliente' AND estado = '1'  ");
+$query_clientes->execute();
+$datos_clientes = $query_clientes->fetchAll(PDO::FETCH_ASSOC);
+foreach ($datos_clientes as $datos_cliente) {
+    $id_cliente = $datos_cliente['id_cliente'];
+    $nombre_cliente = $datos_cliente['nombre_cliente'];
+    $cc_cliente = $datos_cliente['cc_cliente'];
+    $placa_auto = $datos_cliente['placa_auto'];
+}
+
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, array(79, 175), true, 'UTF-8', false);
 
@@ -109,17 +157,17 @@ $html = '
         TELÉFONO: '.$telefono.' <br>
         '.$departamento_ciudad.' 
         -----------------------------------------------------------------------------------
-            <b> Facura Nro. </b> 0001
+            <b> Facura Nro. </b> '.$nro_factura.'
         -----------------------------------------------------------------------------------
             <div style="text-align:left">
-            <b> DATOS DEL CLIENTE </b> <br>
-            <b> CLIENTE: </b> LUIS FELIPE ROBLEDO SANTOS <br>
-            <b> CC: </b> 107729881 <br>
-            <b> Fecha de la factura: </b> Quibdó, 4 de Noviembre del 2024
+            <b> DATOS DEL CLIENTE </b> <br> 
+            <b> CLIENTE: </b> '.$nombre_cliente.' <br> 
+            <b> CC: </b> '.$cc_cliente.' <br>
+            <b> Fecha de la factura: </b> '.$fecha_factura.'
             -----------------------------------------------------------------------------------<br>
-            <b> De: </b> 4/11/2024 <b> Hora: </b> 4:00 P.M <br>
-            <b> A: </b> 4/11/2024 <b> Hora: </b> 6:00 P.M <br>
-            <b> Tiempo: </b> 2 horas 
+            <b> De: </b> '.$fecha_ingreso.' <b> Hora: </b> '.$hora_ingreso.' <br>
+            <b> A: </b> '.$fecha_salida.' <b> Hora: </b> '.$hora_salida.' <br>
+            <b> Tiempo: </b> '.$tiempo.' 
             -----------------------------------------------------------------------------------<br>
             <table border="1" cellpadding ="1" >
             <tr>
@@ -130,21 +178,21 @@ $html = '
             </tr>
 
             <tr>
-                <td>Servicio de parqueo de 2 horas en el cuviculo 10 </td>
-                <td style="text-align:center"> 8.000 </td>
-                <td style="text-align:center"> 1 </td>
-                <td style="text-align:center"> COL$ 8.000 </td>
+                <td> '.$detalle.' </td>
+                <td style="text-align:center"> '.$precio.' </td>
+                <td style="text-align:center"> '.$cantidad.' </td>
+                <td style="text-align:center"> COL$ '.$total.' </td>
             </tr>
             </table>
             <p style="text-align:rigth">
-            <b> Monto Total: </b> COL$ 8.000
+            <b> Monto Total: </b> COL$ '.$monto_total.'
             </p>
 
             <p>
-             <b> Son: </b> Ocho mil pesos
+             <b> Son: </b> '.$monto_literal.'
             </p>
              ----------------------------------------------------------------------------------- <br>
-            <b> USUARIO:</b> ERICK MANUEL MORENO PALACIOS <br><br><br><br><br><br><br><br><br><br>
+            <b> USUARIO:</b> '.$user_sesion.' <br><br><br><br><br><br><br><br><br>
             <p style="text-align:center" >
             </p>
 
@@ -168,16 +216,12 @@ $style = array(
     'module_height' => 1 // height of a single module in points
 );
 
-$QR = 'Factura realizada por el sistema de paqueo OASISPARK, al cliente 
-Luis Felipe Robledo Santos con CC: 11813667 
-con el vehiculo con numero de placa CVY000, 
-esta factura se genero en 7 de noviembre del 2024 a las hr: 09:57';
-$pdf->write2DBarcode($QR,'QRCODE,L',  22,105,35,35, $style);
+$pdf->write2DBarcode($qr,'QRCODE,L',  25,112,30,30, $style);
 
 
 
 //Close and output PDF document
-$pdf->Output('example_002.pdf', 'I');
+$pdf->Output('Factura.pdf', 'I');
 
 
 //============================================================+
