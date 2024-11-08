@@ -51,49 +51,30 @@ $fecha_ingreso = $_GET['fecha_ingreso'];
 $hora_ingreso = $_GET['hora_ingreso'];
 
 
-$fecha_salida = date('d/m/Y');
+$fecha_salida = date('Y/m/d');
 
 $fecha_salida_para_calcular = date('Y/m/d');
 
 $hora_salida = date('H:i');
 
-/* Calcula los dias en el parqueo */
+//Calcula la diferencia entre el tiempo de entrada y salida
+$fecha_hora_ingreso = $fecha_ingreso . " " . $hora_ingreso;
+$fecha_hora_salida = $fecha_salida . " " . $hora_salida;
 
-$dato1 = new DateTime($fecha_ingreso);
-$dato2 = new DateTime($fecha_salida_para_calcular);
-$dias_calculados = $dato1->diff($dato2);
-$dias_calculados->days . ' día(s) ';
+$fecha_hora_ingreso = new DateTime($fecha_hora_ingreso);
+$fecha_hora_salida = new DateTime($fecha_hora_salida);
+$diff = $fecha_hora_ingreso->diff($fecha_hora_salida);
 
-$c_hora_ingreso = strtotime(datetime: $hora_ingreso);
-
-$c_hora_salida = strtotime(datetime: $hora_salida);
-
-$diferencia_hora = ($c_hora_salida - $c_hora_ingreso) / 3600;
-
-round($diferencia_hora, 2);
-
-$hora_calculada = ((int)$diferencia_hora);
-
-$diferencia_minutos = ($c_hora_salida - $c_hora_ingreso) / 60;
-
-$caculando = $hora_calculada * 60;
-
-$minutos_calculados = $diferencia_minutos - $caculando;
-
-if (($dias_calculados->days) == "0") {
-    $tiempo = $hora_calculada . " hora(s) con " . $minutos_calculados . " minuto(s)";
-}else{
-    $tiempo = $dias_calculados->days . " día(s) " . $hora_calculada . " hora(s) con " . $minutos_calculados . " minuto(s)";
-
-}
+$tiempo = $diff->days . " día(s) con " . $diff->h . " hora(s) con " . $diff->i . " minuto(s) ";
+///////////////////////////////////////////////////////////////
 
 $cuviculo = $_GET['cuviculo'];
 $detalle = "Servicio de parqueo de " . $tiempo;
 
 
-/* Calcula el precio del cliente en horas */
+// Calcula el precio del cliente en horas 
 
-$query_precios = $pdo->prepare("SELECT * FROM tb_precios WHERE cantidad = '$hora_calculada' AND detalle = 'HORA(S)' AND estado = '1' ");
+$query_precios = $pdo->prepare("SELECT * FROM tb_precios WHERE cantidad = '$diff->h' AND detalle = 'HORA(S)' AND estado = '1' ");
 $query_precios->execute();
 $datos_precios = $query_precios->fetchAll(PDO::FETCH_ASSOC);
 foreach ($datos_precios as $datos_precio) {
@@ -101,10 +82,10 @@ foreach ($datos_precios as $datos_precio) {
 }
 
 
-/* Calcula el precio del cliente en días */
+// Calcula el precio del cliente en días 
 
 $precio_dia = "0";
-$query_precios_dias = $pdo->prepare("SELECT * FROM tb_precios WHERE cantidad = '$dias_calculados->days' AND detalle = 'DIA(S)' AND estado = '1' ");
+$query_precios_dias = $pdo->prepare("SELECT * FROM tb_precios WHERE cantidad = '$diff->days' AND detalle = 'DIA(S)' AND estado = '1' ");
 $query_precios_dias->execute();
 $datos_precios_dias = $query_precios_dias->fetchAll(PDO::FETCH_ASSOC);
 foreach ($datos_precios_dias as $datos_precio_dia) {
@@ -135,9 +116,9 @@ foreach ($datos_clientes as $datos_cliente) {
     $placa_auto = $datos_cliente['placa_auto'];
 }
 
-$qr = "Factura realizada por el sistema de paqueo, al cliente ".$nombre_cliente." 
-con el CC: ".$cc_cliente.", el vehiculo con número de placa ".$placa_auto.", 
-esta factura se generó en ".$fecha_factura." a las: ".$hora_salida." ";
+$qr = "Factura realizada por el sistema de paqueo, al cliente " . $nombre_cliente . " 
+con el CC: " . $cc_cliente . ", el vehiculo con número de placa " . $placa_auto . ", 
+esta factura se generó en " . $fecha_factura . " a las: " . $hora_salida . " ";
 
 $sentencia = $pdo->prepare('INSERT INTO tb_facturaciones
 (id_informacion,nro_factura,id_cliente,fecha_factura,fecha_ingreso,hora_ingreso,fecha_salida,hora_salida,tiempo,cuviculo,detalle,precio,cantidad,total,monto_total,monto_literal,user_sesion,qr, fyh_creacion, estado)
@@ -167,9 +148,32 @@ $sentencia->bindParam('estado', $estado_del_registro);
 
 if ($sentencia->execute()) {
     echo 'success';
-    ?>
-    <script>location.href = "facturacion/factura.php";</script>
-    <?php
+
+    $estado_espacio = "LIBRE";
+    date_default_timezone_set("America/Bogota");
+    $fechaHora = date("Y-m-d h:i:s");
+    $sentencia = $pdo->prepare("UPDATE tb_mapeos SET
+    estado_espacio = :estado_espacio,
+    fyh_actualizacion = :fyh_actualizacion 
+    WHERE nro_espacio = :nro_espacio");
+    $sentencia->bindParam(':estado_espacio', $estado_espacio);
+    $sentencia->bindParam(':fyh_actualizacion', $fechaHora);
+    $sentencia->bindParam(':nro_espacio', $cuviculo);
+    $sentencia->execute();
+
+    $estado_espacio_ticket = "LIBRE";
+    $sentencia_ticket = $pdo->prepare("UPDATE tb_tickets SET
+    estado_ticket = :estado_ticket WHERE fecha_ingreso = :fecha_ingreso AND hora_ingreso = :hora_ingreso");
+    $sentencia_ticket->bindParam(':estado_ticket', $estado_espacio_ticket);
+    $sentencia_ticket->bindParam(':fecha_ingreso', $fecha_ingreso);
+    $sentencia_ticket->bindParam(':hora_ingreso', $hora_ingreso);
+    $sentencia_ticket->execute();
+
+?>
+    <script>
+        location.href = "facturacion/factura.php";
+    </script>
+<?php
 } else {
     echo 'error al registrar a la base de datos';
 }
